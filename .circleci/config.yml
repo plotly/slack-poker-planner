@@ -1,0 +1,26 @@
+version: 2.0
+
+jobs:
+  build:
+    docker:
+      - image: circleci/python:2-stretch
+    working_directory: ~/slack-poker-planner
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: build docker image
+          command: |
+            SANITIZED_BRANCH=$(echo "$CIRCLE_BRANCH" | iconv -t ascii//TRANSLIT | sed -r s/[^a-zA-Z0-9]+/-/g | sed -r s/^-+\|-+$//g | tr A-Z a-z)
+            docker login -u $DOCKER_USER -p $DOCKER_PASS quay.io
+            docker pull quay.io/plotly/slack-poker-planner:master
+            docker pull quay.io/plotly/slack-poker-planner:${SANITIZED_BRANCH} || true
+            docker build -t quay.io/plotly/slack-poker-planner:${SANITIZED_BRANCH}-sha-${CIRCLE_SHA1} .
+      - run:
+          name: push the docker image
+          command: |
+            SANITIZED_BRANCH=$(echo "$CIRCLE_BRANCH" | iconv -t ascii//TRANSLIT | sed -r s/[^a-zA-Z0-9]+/-/g | sed -r s/^-+\|-+$//g | tr A-Z a-z)
+            docker login -u $DOCKER_USER -p $DOCKER_PASS quay.io
+            docker push quay.io/plotly/slack-poker-planner:${SANITIZED_BRANCH}-sha-${CIRCLE_SHA1}
+            docker tag quay.io/plotly/slack-poker-planner:${SANITIZED_BRANCH}-sha-${CIRCLE_SHA1} quay.io/plotly/slack-poker-planner:${SANITIZED_BRANCH}
+            docker push quay.io/plotly/slack-poker-planner:${SANITIZED_BRANCH}
