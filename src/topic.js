@@ -241,12 +241,6 @@ function buildTopicMessageAttachments(topic) {
                     text: '3',
                     type: 'button',
                     value: '3'
-                },
-                {
-                    name: 'point',
-                    text: '5',
-                    type: 'button',
-                    value: '5'
                 }
             ]
         },
@@ -257,6 +251,12 @@ function buildTopicMessageAttachments(topic) {
             color: '#3AA3E3',
             attachment_type: 'default',
             actions: [
+                {
+                    name: 'point',
+                    text: '5',
+                    type: 'button',
+                    value: '5'
+                },
                 {
                     name: 'point',
                     text: '8',
@@ -280,7 +280,16 @@ function buildTopicMessageAttachments(topic) {
                     text: '40',
                     type: 'button',
                     value: '40'
-                },
+                }
+            ]
+        },
+        {
+            text: '',
+            fallback: 'You are unable to vote',
+            callback_id: `vote_${topic.id}`,
+            color: '#3AA3E3',
+            attachment_type: 'default',
+            actions: [
                 {
                     name: 'point',
                     text: '100',
@@ -292,7 +301,13 @@ function buildTopicMessageAttachments(topic) {
                     text: '?',
                     type: 'button',
                     value: '?'
-                }
+                },
+                {
+                    name: 'point',
+                    text: '∞',
+                    type: 'button',
+                    value: '∞'
+                },
             ]
         },
         {
