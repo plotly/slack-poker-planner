@@ -220,6 +220,12 @@ function buildTopicMessageAttachments(topic) {
                 },
                 {
                     name: 'point',
+                    text: '1/2',
+                    type: 'button',
+                    value: '1/2'
+                },
+                {
+                    name: 'point',
                     text: '1',
                     type: 'button',
                     value: '1'
@@ -280,6 +286,12 @@ function buildTopicMessageAttachments(topic) {
                     text: '100',
                     type: 'button',
                     value: '100'
+                },
+                {
+                    name: 'point',
+                    text: '?',
+                    type: 'button',
+                    value: '?'
                 }
             ]
         },
