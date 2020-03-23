@@ -1,0 +1,65 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: planning-poker
+  name: planning-poker
+  namespace: planning-poker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: planning-poker
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: planning-poker
+    spec:
+      containers:
+      - env:
+        - name: SLACK_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              key: SLACK_CLIENT_ID
+              name: slack
+        - name: SLACK_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              key: SLACK_CLIENT_SECRET
+              name: slack
+        - name: SLACK_VERIFICATION_TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: SLACK_VERIFICATION_TOKEN
+              name: slack
+        - name: DB_FILE
+          valueFrom:
+            configMapKeyRef:
+              key: DB_FILE
+              name: config
+        image: quay.io/plotly/slack-poker-planner:master
+        imagePullPolicy: Always
+        name: slack-poker-planner
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /db
+          name: db
+      dnsPolicy: ClusterFirst
+      imagePullSecrets:
+      - name: quay
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - secret:
+          defaultMode: 420
+          secretName: slack
+        name: db
